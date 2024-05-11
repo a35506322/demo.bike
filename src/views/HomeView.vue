@@ -1,9 +1,11 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import { ref } from 'vue'
+
+const msg = ref('Hello, Vue 3!')
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <h1>{{ msg }}</h1>
   </main>
 </template>
