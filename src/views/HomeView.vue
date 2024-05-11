@@ -2,11 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { initFlowbite } from 'flowbite';
 
-// initialize components based on data attribute selectors
-onMounted(() => {
-  initFlowbite();
-});
-
+// 呼叫api https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json
+// 取得資料後，將資料存入bikeinfo
 /*
 "sno"：站點編號，這裡是 500101001。
 "sna"：站點名稱，中文為 YouBike2.0_捷運科技大樓站。
@@ -27,28 +24,19 @@ onMounted(() => {
 "longitude"：站點的經度坐標，這裡是 121.5436。
 "available_return_bikes"：可歸還的腳踏車數量，這裡是 27 輛。
 */
-const bikeinfo = ref([
-  {
-    sno: '500101001',
-    sna: 'YouBike2.0_捷運科技大樓站',
-    sarea: '大安區',
-    mday: '2024-05-11 20:15:19',
-    ar: '復興南路二段235號前',
-    sareaen: 'Daan Dist.',
-    snaen: 'YouBike2.0_MRT Technology Bldg. Sta.',
-    aren: 'No.235， Sec. 2， Fuxing S. Rd.',
-    act: '1',
-    srcUpdateTime: '2024-05-11 20:15:26',
-    updateTime: '2024-05-11 20:15:52',
-    infoTime: '2024-05-11 20:15:19',
-    infoDate: '2024-05-11',
-    total: 28,
-    available_rent_bikes: 1,
-    latitude: 25.02605,
-    longitude: 121.5436,
-    available_return_bikes: 27
-  }
-]);
+const bikeinfo = ref([]);
+const getBikeInfo = async () => {
+  const response = await fetch(
+    'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json'
+  );
+  const data = await response.json();
+  bikeinfo.value = data;
+};
+
+onMounted(async () => {
+  await getBikeInfo();
+  initFlowbite();
+});
 </script>
 
 <template>
@@ -102,17 +90,19 @@ const bikeinfo = ref([
         </thead>
         <tbody>
           <tr
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-blue-100"
+            class="odd:bg-white even:bg-gray-100 border-b hover:bg-blue-100"
+            v-for="(item, index) in bikeinfo"
+            :key="item.sno"
           >
-            <td class="p-2 text-center">{{ bikeinfo[0].sno }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].sna }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].sarea }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].ar }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].total }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].available_rent_bikes }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].latitude }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].longitude }}</td>
-            <td class="p-2 text-center">{{ bikeinfo[0].available_return_bikes }}</td>
+            <td class="p-2 text-center">{{ item.sno }}</td>
+            <td class="p-2 text-center">{{ item.sna }}</td>
+            <td class="p-2 text-center">{{ item.sarea }}</td>
+            <td class="p-2 text-center">{{ item.ar }}</td>
+            <td class="p-2 text-center">{{ item.total }}</td>
+            <td class="p-2 text-center">{{ item.available_rent_bikes }}</td>
+            <td class="p-2 text-center">{{ item.latitude }}</td>
+            <td class="p-2 text-center">{{ item.longitude }}</td>
+            <td class="p-2 text-center">{{ item.available_return_bikes }}</td>
           </tr>
         </tbody>
       </table>
