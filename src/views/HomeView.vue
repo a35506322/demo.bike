@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { initFlowbite } from 'flowbite';
 
 // 呼叫api https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json
@@ -32,6 +32,10 @@ const getBikeInfo = async () => {
   const data = await response.json();
   bikeinfo.value = data;
 };
+const searchAr = ref('');
+const bikeinfoFilter = computed(() => {
+  return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value));
+});
 
 onMounted(async () => {
   await getBikeInfo();
@@ -58,8 +62,9 @@ onMounted(async () => {
               type="text"
               id="first_name"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="輸入關鍵字查詢"
+              placeholder="輸入站點地址"
               required
+              v-model="searchAr"
             />
           </div>
           <button
@@ -91,7 +96,7 @@ onMounted(async () => {
         <tbody>
           <tr
             class="odd:bg-white even:bg-gray-100 border-b hover:bg-blue-100"
-            v-for="(item, index) in bikeinfo"
+            v-for="(item, index) in bikeinfoFilter"
             :key="item.sno"
           >
             <td class="p-2 text-center">{{ item.sno }}</td>
