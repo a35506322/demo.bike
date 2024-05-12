@@ -33,11 +33,25 @@ const getBikeInfo = async () => {
   bikeinfo.value = data;
 };
 
+// 關鍵字搜尋
 const searchAr = ref('');
 const bikeinfoFilterBySearchAr = computed(() => {
   return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value));
 });
 
+// 關鍵字Highlight
+const heightligthAr = (ar) => {
+  if (searchAr.value) {
+    return ar.replace(
+      searchAr.value,
+      `<span class="text-red-500 font-bold">${searchAr.value}</span>`
+    );
+  } else {
+    return ar;
+  }
+};
+
+// 目前排序
 const currentSort = ref('');
 // Desc 高到低, Asc 低到高
 const isSortDesc = ref(null);
@@ -245,7 +259,7 @@ onMounted(async () => {
             <td class="p-2 text-center">{{ item.sno }}</td>
             <td class="p-2 text-center">{{ item.sna }}</td>
             <td class="p-2 text-center">{{ item.sarea }}</td>
-            <td class="p-2 text-center">{{ item.ar }}</td>
+            <td class="p-2 text-center" v-html="heightligthAr(item.ar)"></td>
             <td class="p-2 text-center">{{ item.total }}</td>
             <td class="p-2 text-center">{{ item.available_rent_bikes }}</td>
             <td class="p-2 text-center">{{ item.latitude }}</td>
