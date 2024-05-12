@@ -32,9 +32,33 @@ const getBikeInfo = async () => {
   const data = await response.json();
   bikeinfo.value = data;
 };
+
 const searchAr = ref('');
-const bikeinfoFilter = computed(() => {
+const bikeinfoFilterBySearchAr = computed(() => {
   return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value));
+});
+
+const currentSort = ref('');
+// Desc 高到低, Asc 低到高
+const isSortDesc = ref(null);
+const sortBikeInfo = (type) => {
+  currentSort.value = type;
+
+  if (isSortDesc.value === null) {
+    isSortDesc.value = true;
+  } else {
+    isSortDesc.value = !isSortDesc.value;
+  }
+};
+
+const bikeinfoFilterBySort = computed(() => {
+  if (!currentSort.value) {
+    return bikeinfoFilterBySearchAr.value;
+  }
+
+  return isSortDesc.value
+    ? bikeinfoFilterBySearchAr.value.sort((a, b) => b[currentSort.value] - a[currentSort.value])
+    : bikeinfoFilterBySearchAr.value.sort((a, b) => a[currentSort.value] - b[currentSort.value]);
 });
 
 onMounted(async () => {
@@ -79,15 +103,134 @@ onMounted(async () => {
     <!--top bar end-->
     <!--datatable start-->
     <div class="relative overflow-x-auto shadow-md top-20">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 table-fixed">
         <thead class="text-white uppercase bg-blue-600 dark:text-white">
           <tr>
             <th class="font-semibold text-center p-2">站點編號</th>
             <th class="font-semibold text-center p-2">站點名稱</th>
             <th class="font-semibold text-center p-2">站點所在區域</th>
             <th class="font-semibold text-center p-2">站點地址</th>
-            <th class="font-semibold text-center p-2">總車位數量</th>
-            <th class="font-semibold text-center p-2">可租借的腳踏車數量</th>
+            <th class="font-semibold text-center p-2">
+              <div class="flex items-center justify-center">
+                <span class="mr-1">總車位數量</span>
+                <span class="cursor-pointer" @click="sortBikeInfo('total')">
+                  <svg
+                    class="w-[16px] h-[16px] text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    :fill="currentSort === 'total' && isSortDesc === true ? 'currentColor' : 'none'"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      v-if="currentSort === 'total' && isSortDesc === true"
+                      fill-rule="evenodd"
+                      d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      v-else
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16.881 16H7.119a1 1 0 0 1-.772-1.636l4.881-5.927a1 1 0 0 1 1.544 0l4.88 5.927a1 1 0 0 1-.77 1.636Z"
+                    />
+                  </svg>
+
+                  <svg
+                    class="w-[16px] h-[16px] text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    :fill="
+                      currentSort === 'total' && isSortDesc === false ? 'currentColor' : 'none'
+                    "
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      v-if="currentSort === 'total' && isSortDesc === false"
+                      fill-rule="evenodd"
+                      d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      v-else
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7.119 8h9.762a1 1 0 0 1 .772 1.636l-4.881 5.927a1 1 0 0 1-1.544 0l-4.88-5.927A1 1 0 0 1 7.118 8Z"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </th>
+            <th class="font-semibold text-center p-2">
+              <div class="flex items-center justify-center">
+                <span class="mr-1">可租借的腳踏車數量</span>
+                <span class="cursor-pointer" @click="sortBikeInfo('available_rent_bikes')">
+                  <svg
+                    class="w-[16px] h-[16px] text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    :fill="
+                      currentSort === 'available_rent_bikes' && isSortDesc === true
+                        ? 'currentColor'
+                        : 'none'
+                    "
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      v-if="currentSort === 'available_rent_bikes' && isSortDesc === true"
+                      fill-rule="evenodd"
+                      d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      v-else
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16.881 16H7.119a1 1 0 0 1-.772-1.636l4.881-5.927a1 1 0 0 1 1.544 0l4.88 5.927a1 1 0 0 1-.77 1.636Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-[16px] h-[16px] text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    :fill="
+                      currentSort === 'available_rent_bikes' && isSortDesc === false
+                        ? 'currentColor'
+                        : 'none'
+                    "
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      v-if="currentSort === 'available_rent_bikes' && isSortDesc === false"
+                      fill-rule="evenodd"
+                      d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      v-else
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7.119 8h9.762a1 1 0 0 1 .772 1.636l-4.881 5.927a1 1 0 0 1-1.544 0l-4.88-5.927A1 1 0 0 1 7.118 8Z"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </th>
             <th class="font-semibold text-center p-2">站點緯度</th>
             <th class="font-semibold text-center p-2">站點經度</th>
             <th class="font-semibold text-center p-2">可歸還的腳踏車數量</th>
@@ -96,7 +239,7 @@ onMounted(async () => {
         <tbody>
           <tr
             class="odd:bg-white even:bg-gray-100 border-b hover:bg-blue-100"
-            v-for="(item, index) in bikeinfoFilter"
+            v-for="(item, index) in bikeinfoFilterBySort"
             :key="item.sno"
           >
             <td class="p-2 text-center">{{ item.sno }}</td>
