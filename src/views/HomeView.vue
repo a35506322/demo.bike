@@ -36,7 +36,7 @@ const getBikeInfo = async () => {
 // 關鍵字搜尋
 const searchAr = ref('');
 const bikeinfoFilterBySearchAr = computed(() => {
-  return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value));
+  return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value)).slice(0, 21);
 });
 
 // 關鍵字Highlight
@@ -75,6 +75,17 @@ const bikeinfoFilterBySort = computed(() => {
     : bikeinfoFilterBySearchAr.value.sort((a, b) => a[currentSort.value] - b[currentSort.value]);
 });
 
+const currentPage = ref(1);
+const bikeinfoFilterBySortTotal = computed(() => Math.ceil(bikeinfoFilterBySort.value.length / 10));
+const bikeinfoFilterBySortSliced = computed(() => {
+  const start = (currentPage.value - 1) * 10;
+  const end =
+    start + 10 <= bikeinfoFilterBySort.value.length
+      ? start + 10
+      : bikeinfoFilterBySort.value.length;
+  return bikeinfoFilterBySort.value.slice(start, end);
+});
+
 onMounted(async () => {
   await getBikeInfo();
   initFlowbite();
@@ -84,9 +95,7 @@ onMounted(async () => {
 <template>
   <div class="container mx-auto px-4">
     <!--top bar start-->
-    <nav
-      class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600"
-    >
+    <nav class="bg-white w-full top-0 start-0 border-b border-gray-300 mb-2">
       <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
@@ -115,8 +124,9 @@ onMounted(async () => {
       </div>
     </nav>
     <!--top bar end-->
+
     <!--datatable start-->
-    <div class="relative overflow-x-auto shadow-md top-20">
+    <div class="overflow-x-auto shadow-md">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 table-fixed">
         <thead class="text-white uppercase bg-blue-600 dark:text-white">
           <tr>
@@ -253,7 +263,7 @@ onMounted(async () => {
         <tbody>
           <tr
             class="odd:bg-white even:bg-gray-100 border-b hover:bg-blue-100"
-            v-for="(item, index) in bikeinfoFilterBySort"
+            v-for="(item, index) in bikeinfoFilterBySortSliced"
             :key="item.sno"
           >
             <td class="p-2 text-center">{{ item.sno }}</td>
@@ -269,7 +279,39 @@ onMounted(async () => {
         </tbody>
       </table>
     </div>
-
     <!--datatable end-->
+
+    <!--pagination start-->
+    <nav aria-label="Page navigation example" class="text-center mt-3">
+      <ul class="inline-flex -space-x-px text-base h-10">
+        <li>
+          <a
+            href="#"
+            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >上一頁</a
+          >
+        </li>
+        <li v-for="(item, index) in bikeinfoFilterBySortTotal" :key="item">
+          <a
+            :class="[
+              currentPage === item
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'text-gray-500 bg-white hover:bg-gray-100 '
+            ]"
+            href="#"
+            class="flex items-center justify-center px-4 h-10 leading-tight border border-gray-300"
+            >{{ item }}</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >下一頁</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <!--pagination end-->
   </div>
 </template>
