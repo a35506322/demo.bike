@@ -24,7 +24,11 @@ import { initFlowbite } from 'flowbite';
 "longitude"：站點的經度坐標，這裡是 121.5436。
 "available_return_bikes"：可歸還的腳踏車數量，這裡是 27 輛。
 */
+
+// YouBike資料
 const bikeinfo = ref([]);
+
+// 取得YouBike資料
 const getBikeInfo = async () => {
   const response = await fetch(
     'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json'
@@ -65,6 +69,7 @@ const sortBikeInfo = (type) => {
   }
 };
 
+// 排序後的資料
 const bikeinfoFilterBySort = computed(() => {
   if (!currentSort.value) {
     return bikeinfoFilterBySearchAr.value;
@@ -75,8 +80,13 @@ const bikeinfoFilterBySort = computed(() => {
     : bikeinfoFilterBySearchAr.value.sort((a, b) => a[currentSort.value] - b[currentSort.value]);
 });
 
+// 當前頁數
 const currentPage = ref(1);
+
+// 總頁數
 const bikeinfoFilterBySortTotal = computed(() => Math.ceil(bikeinfoFilterBySort.value.length / 10));
+
+// 每頁顯示10筆資料
 const bikeinfoFilterBySortSliced = computed(() => {
   const start = (currentPage.value - 1) * 10;
   const end =
@@ -86,6 +96,7 @@ const bikeinfoFilterBySortSliced = computed(() => {
   return bikeinfoFilterBySort.value.slice(start, end);
 });
 
+// 切換頁數
 const changePage = (page) => {
   currentPage.value = page;
 };
