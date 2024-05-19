@@ -40,7 +40,7 @@ const getBikeInfo = async () => {
 // 關鍵字搜尋
 const searchAr = ref('');
 const bikeinfoFilterBySearchAr = computed(() => {
-  return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value)).slice(0, 21);
+  return bikeinfo.value.filter((item) => item.ar.includes(searchAr.value));
 });
 
 // 關鍵字Highlight
@@ -92,9 +92,26 @@ const bikeinfoFilterBySort = computed(() => {
 
 // 當前頁數
 const currentPage = ref(1);
-
+const maxPage = 10;
 // 總頁數
 const bikeinfoFilterBySortTotal = computed(() => Math.ceil(bikeinfoFilterBySort.value.length / 10));
+
+// 計算當前顯示頁碼最多十頁
+const currentPageList = computed(() => {
+  let result = [];
+  // 取得當前頁碼的前五頁
+  const start = currentPage.value - 5 > 0 ? currentPage.value - 5 : 1;
+
+  // 取得當前頁碼的後五頁
+  const end =
+    start + maxPage - 1 <= bikeinfoFilterBySortTotal.value
+      ? start + maxPage - 1
+      : bikeinfoFilterBySortTotal.value;
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+  return result;
+});
 
 // 每頁顯示10筆資料
 const bikeinfoFilterBySortSliced = computed(() => {
@@ -339,7 +356,7 @@ onMounted(async () => {
             >上一頁</a
           >
         </li>
-        <li v-for="(item, index) in bikeinfoFilterBySortTotal" :key="item">
+        <li v-for="(item, index) in currentPageList" :key="item">
           <a
             :class="[
               currentPage === item
