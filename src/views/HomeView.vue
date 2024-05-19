@@ -114,12 +114,13 @@ const currentPageList = computed(() => {
 });
 
 // 每頁顯示10筆資料
+const rows = 10;
 const bikeinfoFilterBySortSliced = computed(() => {
   let result = [];
-  const start = (currentPage.value - 1) * 10;
+  const start = (currentPage.value - 1) * rows;
   const end =
-    start + 10 <= bikeinfoFilterBySort.value.length
-      ? start + 10
+    start + rows <= bikeinfoFilterBySort.value.length
+      ? start + rows
       : bikeinfoFilterBySort.value.length;
   result = [...bikeinfoFilterBySort.value.slice(start, end)];
   return result;
