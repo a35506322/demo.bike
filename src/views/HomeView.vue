@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { initFlowbite } from 'flowbite';
 
 // 呼叫api https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json
@@ -126,6 +126,11 @@ const nextPage = () => {
     currentPage.value += 1;
   }
 };
+
+// 監聽搜尋關鍵字=>重置頁數
+watch(searchAr, () => {
+  currentPage.value = 1;
+});
 
 onMounted(async () => {
   await getBikeInfo();
