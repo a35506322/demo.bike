@@ -86,6 +86,24 @@ const bikeinfoFilterBySortSliced = computed(() => {
   return bikeinfoFilterBySort.value.slice(start, end);
 });
 
+const changePage = (page) => {
+  currentPage.value = page;
+};
+
+// 前一頁
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value -= 1;
+  }
+};
+
+// 下一頁
+const nextPage = () => {
+  if (currentPage.value < bikeinfoFilterBySortTotal.value) {
+    currentPage.value += 1;
+  }
+};
+
 onMounted(async () => {
   await getBikeInfo();
   initFlowbite();
@@ -287,7 +305,9 @@ onMounted(async () => {
         <li>
           <a
             href="#"
-            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+            @click="prevPage"
+            :class="[currentPage === 1 ? 'cursor-not-allowed' : '']"
             >上一頁</a
           >
         </li>
@@ -300,13 +320,16 @@ onMounted(async () => {
             ]"
             href="#"
             class="flex items-center justify-center px-4 h-10 leading-tight border border-gray-300"
+            @click.prevent="changePage(item)"
             >{{ item }}</a
           >
         </li>
         <li>
           <a
             href="#"
-            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+            @click.prevent="nextPage"
+            :class="[currentPage === bikeinfoFilterBySortTotal ? 'cursor-not-allowed' : '']"
             >下一頁</a
           >
         </li>
