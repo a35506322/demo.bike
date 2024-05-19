@@ -60,24 +60,34 @@ const currentSort = ref('');
 // Desc 高到低, Asc 低到高
 const isSortDesc = ref(null);
 const sortBikeInfo = (type) => {
+  const originType = currentSort.value;
   currentSort.value = type;
 
+  // 第一次執行
   if (isSortDesc.value === null) {
     isSortDesc.value = true;
   } else {
-    isSortDesc.value = !isSortDesc.value;
+    // 判斷是否為同一個欄位
+    // 是的話切換排序
+    // 不是的話預設為降冪排序
+    if (originType === currentSort.value) {
+      isSortDesc.value = !isSortDesc.value;
+    } else {
+      isSortDesc.value = true;
+    }
   }
 };
 
 // 排序後的資料
 const bikeinfoFilterBySort = computed(() => {
+  let result = [...bikeinfoFilterBySearchAr.value];
   if (!currentSort.value) {
-    return bikeinfoFilterBySearchAr.value;
+    return result;
   }
 
   return isSortDesc.value
-    ? bikeinfoFilterBySearchAr.value.sort((a, b) => b[currentSort.value] - a[currentSort.value])
-    : bikeinfoFilterBySearchAr.value.sort((a, b) => a[currentSort.value] - b[currentSort.value]);
+    ? result.sort((a, b) => b[currentSort.value] - a[currentSort.value])
+    : result.sort((a, b) => a[currentSort.value] - b[currentSort.value]);
 });
 
 // 當前頁數
@@ -88,12 +98,14 @@ const bikeinfoFilterBySortTotal = computed(() => Math.ceil(bikeinfoFilterBySort.
 
 // 每頁顯示10筆資料
 const bikeinfoFilterBySortSliced = computed(() => {
+  let result = [];
   const start = (currentPage.value - 1) * 10;
   const end =
     start + 10 <= bikeinfoFilterBySort.value.length
       ? start + 10
       : bikeinfoFilterBySort.value.length;
-  return bikeinfoFilterBySort.value.slice(start, end);
+  result = [...bikeinfoFilterBySort.value.slice(start, end)];
+  return result;
 });
 
 // 切換頁數
