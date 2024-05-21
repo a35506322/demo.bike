@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { initFlowbite } from 'flowbite';
 import Paginator from '@/components/Paginator.vue';
+import InputText from '@/components/InputText.vue';
 
 // 呼叫api https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json
 // 取得資料後，將資料存入bikeinfo
@@ -144,14 +145,7 @@ onMounted(async () => {
         </a>
         <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <div class="mr-2">
-            <input
-              type="text"
-              id="first_name"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="輸入站點地址"
-              required
-              v-model="searchAr"
-            />
+            <InputText v-model="searchAr" placeholder="輸入站點地址"></InputText>
           </div>
           <button
             type="submit"
