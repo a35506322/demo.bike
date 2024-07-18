@@ -5,7 +5,7 @@ const props = defineProps(['totalRecords', 'rows', 'isReset']);
 const emits = defineEmits(['page']);
 
 const rows = computed(() => (props.rows ? props.rows : 10));
-const totalRecords = computed(() => Math.ceil(props.totalRecords / rows.value));
+const totalPages = computed(() => Math.ceil(props.totalRecords / rows.value));
 const isReset = computed(() => props.isReset);
 
 // 當前頁數
@@ -20,7 +20,7 @@ const currentPageList = computed(() => {
   const start = currentPage.value - 5 > 0 ? currentPage.value - 5 : 1;
 
   // 取得當前頁碼的後五頁
-  const end = start + maxPage - 1 <= totalRecords.value ? start + maxPage - 1 : totalRecords.value;
+  const end = start + maxPage - 1 <= totalPages.value ? start + maxPage - 1 : totalPages.value;
   for (let i = start; i <= end; i++) {
     result.push(i);
   }
@@ -41,7 +41,7 @@ const prevPage = () => {
 
 // 下一頁
 const nextPage = () => {
-  if (currentPage.value < totalRecords.value) {
+  if (currentPage.value < totalPages.value) {
     currentPage.value += 1;
   }
 };
@@ -86,7 +86,7 @@ watch(isReset, (val) => {
           href="#"
           class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
           @click.prevent="nextPage"
-          :class="[currentPage === totalRecords ? 'cursor-not-allowed' : '']"
+          :class="[currentPage === totalPages ? 'cursor-not-allowed' : '']"
           >下一頁</a
         >
       </li>
