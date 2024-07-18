@@ -177,11 +177,13 @@ onMounted(async () => {
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
-                    :fill="currentSort === 'total' && isSortDesc === true ? 'currentColor' : 'none'"
+                    :fill="
+                      currentSort === 'total' && isSortDesc === false ? 'currentColor' : 'none'
+                    "
                     viewBox="0 0 24 24"
                   >
                     <path
-                      v-if="currentSort === 'total' && isSortDesc === true"
+                      v-if="currentSort === 'total' && isSortDesc === false"
                       fill-rule="evenodd"
                       d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
                       clip-rule="evenodd"
@@ -202,13 +204,11 @@ onMounted(async () => {
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
-                    :fill="
-                      currentSort === 'total' && isSortDesc === false ? 'currentColor' : 'none'
-                    "
+                    :fill="currentSort === 'total' && isSortDesc === true ? 'currentColor' : 'none'"
                     viewBox="0 0 24 24"
                   >
                     <path
-                      v-if="currentSort === 'total' && isSortDesc === false"
+                      v-if="currentSort === 'total' && isSortDesc === true"
                       fill-rule="evenodd"
                       d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
                       clip-rule="evenodd"
@@ -236,14 +236,14 @@ onMounted(async () => {
                     width="24"
                     height="24"
                     :fill="
-                      currentSort === 'available_rent_bikes' && isSortDesc === true
+                      currentSort === 'available_rent_bikes' && isSortDesc === false
                         ? 'currentColor'
                         : 'none'
                     "
                     viewBox="0 0 24 24"
                   >
                     <path
-                      v-if="currentSort === 'available_rent_bikes' && isSortDesc === true"
+                      v-if="currentSort === 'available_rent_bikes' && isSortDesc === false"
                       fill-rule="evenodd"
                       d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
                       clip-rule="evenodd"
@@ -264,14 +264,14 @@ onMounted(async () => {
                     width="24"
                     height="24"
                     :fill="
-                      currentSort === 'available_rent_bikes' && isSortDesc === false
+                      currentSort === 'available_rent_bikes' && isSortDesc === true
                         ? 'currentColor'
                         : 'none'
                     "
                     viewBox="0 0 24 24"
                   >
                     <path
-                      v-if="currentSort === 'available_rent_bikes' && isSortDesc === false"
+                      v-if="currentSort === 'available_rent_bikes' && isSortDesc === true"
                       fill-rule="evenodd"
                       d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
                       clip-rule="evenodd"
